@@ -1,5 +1,6 @@
 import csv
-
+import cpe_utils
+import json
 
 invObjs = []
 
@@ -10,11 +11,22 @@ print(objs)
 for el in objs:
     invObjs.append(InvObj(el[0], el[1]))
 
-for el in invObjs:
-    print(el.cpe)
+for x in invObjs:
+    print(x.part)
 
 
 class InvObj:
     def __init__(self, cpe, ip):
         self.cpe = cpe
         self.ip = ip
+        self.cpeJson = json.loads(cpe_utils.CPE(cpe).to_json())
+
+        if (self.cpeJson["part"] == "a"):
+            self.part = "Application"
+        elif (self.cpeJson["part"] == "o"):
+            self.part = "Operating System"
+        else:
+            self.part = "Hardware"
+
+    def get_cpe(self):
+        return self.cpe
