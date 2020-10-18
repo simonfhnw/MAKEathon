@@ -1,28 +1,28 @@
 import glob
 import pandas as pd
+import os
 
 # get data file names
 path =r'C:/Development/MAKEathon/text_files'
 filenames = glob.glob(path + "/*.txt")
 
 dfs = []
+cpes = []
 i = 0
 
 for filename in filenames:
     f = open(filename, "r")
-    lines = f.read()
-    # df = pd.read_csv(f, names=["text"], header=0)
-    dfs.append(lines)
+    first_line = f.readline()
+    lines = f.readlines()[0:]
+    full_text = ' '.join(lines)
+    full_text = full_text.rstrip("\n")
+    first_line = first_line.rstrip("\n")
+    dfs.append(full_text)
+    cpes.append(first_line)
 
-dict = {'text': dfs}
+dict = {'CPE': cpes, 'text': dfs}
 df = pd.DataFrame(dict)
-big_df = pd.concat()
 
-
-
-# Concatenate all data into one DataFrame
-big_frame = pd.concat(dfs, ignore_index=True)
-# print(big_frame)
 print(df)
 
 

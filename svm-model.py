@@ -11,9 +11,33 @@ import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
 import re
 from bs4 import BeautifulSoup
-
 from sklearn.linear_model import SGDClassifier
+import glob
+import pandas as pd
+import os
 
+# get data file names
+path =r'C:/Development/MAKEathon/text_files'
+filenames = glob.glob(path + "/*.txt")
+
+dfs = []
+cpes = []
+i = 0
+
+for filename in filenames:
+    f = open(filename, "r")
+    first_line = f.readline()
+    lines = f.readlines()[0:]
+    full_text = ' '.join(lines)
+    full_text = full_text.rstrip("\n")
+    first_line = first_line.rstrip("\n")
+    dfs.append(full_text)
+    cpes.append(first_line)
+
+dict = {'CPE': cpes, 'text': dfs}
+df = pd.DataFrame(dict)
+
+# print(df)
 
 df = pd.read_csv('stack-overflow-data.csv')
 df = df[pd.notnull(df['tags'])]
@@ -31,8 +55,6 @@ sgd = Pipeline([('vect', CountVectorizer()),
                 ('clf', SGDClassifier(loss='hinge', penalty='l2',alpha=1e-3, random_state=42, max_iter=5, tol=None)),
                ])
 sgd.fit(X_train, y_train)
-
-%%time
 
 y_pred = sgd.predict(X_test)
 
